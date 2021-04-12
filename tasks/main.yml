@@ -1,0 +1,11 @@
+- block:
+  - name: check if reboot required
+    ansible.builtin.shell: "cat /var/run/reboot-required 2>&1"
+    args:
+      executable: /bin/bash
+    register: "reboot_required"
+  ignore_errors: true
+- name: reboot machine
+  become: yes
+  reboot:
+  when: reboot_required.stdout == "*** System restart required ***"
